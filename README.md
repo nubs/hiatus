@@ -10,7 +10,7 @@ following to your `composer.json` to include this library into your code.
 ```json
 {
     "require": {
-        "nubs/hiatus": "dev-master"
+        "nubs/hiatus": "~1.0"
     }
 }
 ```
