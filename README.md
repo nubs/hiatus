@@ -52,6 +52,19 @@ if ($exitStatus !== 0) {
 echo $stdout;
 ```
 
+An exception-generating variant is also included:
+```php
+<?php
+try {
+    list($stdout, $stderr) = \Hiatus\execX('ls /foo');
+} catch (Exception $e) {
+    echo "Error occurred: {$e->getMessage()}\n";
+    exit(1);
+}
+
+echo $stdout;
+```
+
 ## Contributing
 Any changes, suggestions, or bug reports are welcome to be submitted on github.
 Pull requests are encouraged!

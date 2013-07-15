@@ -2,6 +2,28 @@
 namespace Hiatus;
 
 /**
+ * Adds the given arguments to the command escaping them as necessary.
+ *
+ * @param string $command The shell command to execute.  This can contain arguments, but make sure to use PHP's escapeshellarg for any arguments
+ *     supplied by the user.
+ * @param array $arguments The arguments to pass to the command.  These will be passed through PHP's escapeshellarg function so pass the
+ *     arguments unescaped.  If a key in the array is not numeric, then it will be included as well in a KEY=VALUE format.
+ * @return string The command with the arguments added and escaped.
+ */
+function addArguments($command, array $arguments)
+{
+    foreach ($arguments as $key => $argument) {
+        if (is_numeric($key)) {
+            $command .= ' ' . escapeshellarg($argument);
+        } else {
+            $command .= ' ' . escapeshellarg($key) . '=' . escapeshellarg($argument);
+        }
+    }
+
+    return $command;
+}
+
+/**
  * Executes the command with the given arguments.  If a timeout is given (in seconds), the command will be terminated if it takes longer.
  *
  * @param string $command The shell command to execute.  This can contain arguments, but make sure to use PHP's escapeshellarg for any arguments
@@ -16,14 +38,7 @@ namespace Hiatus;
  */
 function exec($command, array $arguments = [], $timeout = null)
 {
-    foreach ($arguments as $key => $argument) {
-        if (is_numeric($key)) {
-            $command .= ' ' . escapeshellarg($argument);
-        } else {
-            $command .= ' ' . escapeshellarg($key) . '=' . escapeshellarg($argument);
-        }
-    }
-
+    $command = addArguments($command, $arguments);
     $pipes = null;
     $process = proc_open($command, [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
     if ($process === false) {
@@ -68,4 +83,27 @@ function exec($command, array $arguments = [], $timeout = null)
     }
 
     return [$exitCode, $stdout, $stderr];
+}
+
+/**
+ * Executes the command just like \Hiatus\exec(), but if the exit code is not 0 then an exception is raised.
+ *
+ * @param string $command The shell command to execute.  This can contain arguments, but make sure to use PHP's escapeshellarg for any arguments
+ *     supplied by the user.
+ * @param array $arguments The arguments to pass to the command.  These will be passed through PHP's escapeshellarg function so pass the
+ *     arguments unescaped.  If a key in the array is not numeric, then it will be included as well in a KEY=VALUE format.
+ * @param float $timeout If given, this will terminate the command if it does not finish before the timeout expires.
+ * @return array A 2-member array is returned.
+ *     * string The output of the command.
+ *     * string The stderr output of the command.
+ */
+function execX($command, array $arguments = [], $timeout = null)
+{
+    list($exitCode, $stdout, $stderr) = exec($command, $arguments, $timeout);
+
+    if ($exitCode !== 0) {
+        throw new Exception("Failed to execute command '" . addArguments($command, $arguments) . "'. Exited with code {$exitCode}.");
+    }
+
+    return [$stdout, $stderr];
 }
