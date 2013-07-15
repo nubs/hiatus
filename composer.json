@@ -1,0 +1,19 @@
+{
+    "name": "nubs/hiatus",
+    "description": "A library for executing shell commands with an optional timeout.",
+    "keywords": ["exec", "execution", "timeout", "shell"],
+    "authors": [
+        {
+            "name": "Spencer Rinehart",
+            "email": "anubis@overthemonkey.com",
+            "role": "Developer"
+        }
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "autoload": {
+      "files": ["src/hiatus.php"]
+    }
+}
