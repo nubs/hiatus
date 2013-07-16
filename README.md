@@ -65,6 +65,21 @@ try {
 echo $stdout;
 ```
 
+Both `exec` and `execX` can be given a string to pass on stdin:
+```php
+<?php
+list($exitStatus, $stdout, $stderr) = \Hiatus\exec(
+    'wc -c',
+    [],
+    null,
+    'stdin test'
+);
+
+if ((int)$stdout !== 10) {
+    echo "Well, this is awkward.\n";
+}
+```
+
 ## Contributing
 Any changes, suggestions, or bug reports are welcome to be submitted on github.
 Pull requests are encouraged!

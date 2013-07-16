@@ -31,18 +31,29 @@ function addArguments($command, array $arguments)
  * @param array $arguments The arguments to pass to the command.  These will be passed through PHP's escapeshellarg function so pass the
  *     arguments unescaped.  If a key in the array is not numeric, then it will be included as well in a KEY=VALUE format.
  * @param float $timeout If given, this will terminate the command if it does not finish before the timeout expires.
+ * @param string $stdin A string to pass to the command on stdin.
  * @return array A 3-member array is returned.
  *     * int The exit code of the command.
  *     * string The output of the command.
  *     * string The stderr output of the command.
  */
-function exec($command, array $arguments = [], $timeout = null)
+function exec($command, array $arguments = [], $timeout = null, $stdin = null)
 {
     $command = addArguments($command, $arguments);
     $pipes = null;
-    $process = proc_open($command, [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+    $pipeSpec = [1 => ['pipe', 'w'], 2 => ['pipe', 'w']];
+    if ($stdin !== null) {
+        $pipeSpec[0] = ['pipe', 'r'];
+    }
+
+    $process = proc_open($command, $pipeSpec, $pipes);
     if ($process === false) {
         throw new \Exception("Error executing command '{$command}' with proc_open.");
+    }
+
+    if ($stdin !== null) {
+        fwrite($pipes[0], $stdin);
+        fclose($pipes[0]);
     }
 
     if ($timeout !== null) {
@@ -93,13 +104,14 @@ function exec($command, array $arguments = [], $timeout = null)
  * @param array $arguments The arguments to pass to the command.  These will be passed through PHP's escapeshellarg function so pass the
  *     arguments unescaped.  If a key in the array is not numeric, then it will be included as well in a KEY=VALUE format.
  * @param float $timeout If given, this will terminate the command if it does not finish before the timeout expires.
+ * @param string $stdin A string to pass to the command on stdin.
  * @return array A 2-member array is returned.
  *     * string The output of the command.
  *     * string The stderr output of the command.
  */
-function execX($command, array $arguments = [], $timeout = null)
+function execX($command, array $arguments = [], $timeout = null, $stdin = null)
 {
-    list($exitCode, $stdout, $stderr) = exec($command, $arguments, $timeout);
+    list($exitCode, $stdout, $stderr) = exec($command, $arguments, $timeout, $stdin);
 
     if ($exitCode !== 0) {
         throw new Exception("Failed to execute command '" . addArguments($command, $arguments) . "'. Exited with code {$exitCode}.");
