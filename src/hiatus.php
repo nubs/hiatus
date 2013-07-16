@@ -114,7 +114,7 @@ function execX($command, array $arguments = [], $timeout = null, $stdin = null)
     list($exitCode, $stdout, $stderr) = exec($command, $arguments, $timeout, $stdin);
 
     if ($exitCode !== 0) {
-        throw new Exception("Failed to execute command '" . addArguments($command, $arguments) . "'. Exited with code {$exitCode}.");
+        throw new \Exception("Failed to execute command '" . addArguments($command, $arguments) . "'. Exited with code {$exitCode}.");
     }
 
     return [$stdout, $stderr];
