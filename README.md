@@ -4,17 +4,16 @@ A PHP library for executing shell commands with an optional timeout.
 ## Requirements
 PHP 5.4 or newer is the only requirement for this library.
 
-## Usage
-This library is available through [Composer](http://getcomposer.org).  Add the
-following to your `composer.json` to include this library into your code.
-```json
-{
-    "require": {
-        "nubs/hiatus": "~1.0"
-    }
-}
+## Installation
+This package uses [composer](https://getcomposer.org) so you can just add
+`nubs/hiatus` as a dependency to your `composer.json` file or execute the
+following command:
+
+```bash
+composer require nubs/hiatus
 ```
 
+## Usage
 Composer's autoloader will automatically include the namespaced functions for
 use in your project.
 
