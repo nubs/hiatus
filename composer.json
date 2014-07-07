@@ -1,6 +1,6 @@
 {
     "name": "nubs/hiatus",
-    "description": "A library for executing shell commands with an optional timeout.",
+    "description": "DEPRECATED: recommended to use symfony/process instead.",
     "keywords": ["exec", "execution", "timeout", "shell"],
     "authors": [
         {

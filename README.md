@@ -1,5 +1,8 @@
 # Hiatus
 A PHP library for executing shell commands with an optional timeout.
+> DEPRECATED: This library is no longer being actively maintained.
+> [symfony/process](https://github.com/symfony/Process) has all the features of
+> Hiatus and more.  It is recommended as an alternative.
 
 ## Requirements
 PHP 5.4 or newer is the only requirement for this library.
